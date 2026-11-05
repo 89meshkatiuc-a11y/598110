@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ماموریت آن سوی صفر</title>
+
+<style>
+:root{--bg:#eef6fa;--card:#fff;--ink:#0b2a3a;--mut:#4b6b7c;--acc:#0a7ea4;--acc2:#e8631f;--good:#118a48;--bad:#c62f3d;--line:#b3d6e4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07151e;--card:#0d2a3b;--ink:#e3f4fb;--mut:#8db4c6;--acc:#37c6f0;--acc2:#ffa15c;--good:#4fd08b;--bad:#ff6b78;--line:#18475f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#07151e;--card:#0d2a3b;--ink:#e3f4fb;--mut:#8db4c6;--acc:#37c6f0;--acc2:#ffa15c;--good:#4fd08b;--bad:#ff6b78;--line:#18475f;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Vazirmatn",Tahoma,sans-serif;line-height:1.8}
+#app{max-width:460px;margin:0 auto;padding:12px 14px 30px}
+h1{font-size:32px;font-weight:900;margin:6px 0 0;line-height:1.3}
+p{margin:4px 0}.sub{color:var(--mut)}
+.sc{width:100%;height:auto;display:block;border-radius:18px;margin:8px 0}
+svg{width:100%;height:auto;display:block}
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin:10px 0}
+.key{background:color-mix(in srgb,var(--acc2) 14%,transparent);border-radius:12px;padding:6px 10px}
+.stage{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:10px 14px;margin:0 0 9px;color:var(--ink);font:inherit;font-weight:700;font-size:17px;cursor:pointer;text-align:right}
+.stage:disabled{opacity:.45}.stage .ic{font-size:30px}
+.stage small{display:block;color:var(--mut);font-weight:400;font-size:13px}
+.city{display:flex;justify-content:space-between;font-size:26px;margin:10px 0}
+.top{display:flex;align-items:center;justify-content:space-between}
+.ghost{background:none;border:2px solid var(--line);color:var(--ink);border-radius:12px;padding:2px 12px;font:inherit;cursor:pointer}
+.bar{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--good);transition:width .4s}
+.eq{direction:ltr;text-align:center;font-size:32px;font-weight:900}
+.q{font-weight:700;margin-top:10px}
+.opts,.opts3{display:grid;gap:9px;grid-template-columns:1fr 1fr}.opts3{grid-template-columns:1fr 1fr 1fr}
+.opt,.opt2{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 6px;font:inherit;font-size:17px;font-weight:700;color:var(--ink);cursor:pointer;margin:4px 0}
+.opts .opt{direction:ltr;font-size:26px;font-weight:900;margin:0}
+.opt2{display:block;width:100%}.opts3 .opt2{margin:0}
+.ok{background:var(--good)!important;border-color:var(--good)!important;color:#fff!important}
+.no{background:var(--bad)!important;border-color:var(--bad)!important;color:#fff!important}
+.fb{margin-top:10px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:8px 14px}
+.g{color:var(--good)}.r{color:var(--bad)}
+.eqs{direction:ltr;text-align:center;font-size:22px;font-weight:900}
+.pt{font-size:15px;background:var(--bg);border-radius:10px;padding:4px 10px;margin-top:4px}
+.go{width:100%;margin-top:10px;background:var(--acc);color:#fff;border:0;border-radius:14px;padding:12px;font:inherit;font-size:18px;font-weight:700;cursor:pointer}
+:root:not([data-theme="light"]) .go{color:#04141f}
+#pet{transition:transform .9s cubic-bezier(.5,0,.3,1)}
+.res{text-align:center}.res .big{font-size:60px}
+button:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#pet{transition:none}}
+</style></head><body><div id="app"></div>
+<script>
+const app=document.getElementById('app'),A=Math.abs;
+const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const rs=n=>n<0?'\u2212'+fa(-n):fa(n),par=n=>'('+(n<0?'\u2212'+fa(-n):'+'+fa(n))+')';
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,shuf=a=>a.sort(()=>Math.random()-.5);
+const LV=[
+{t:'برج دماسنج',d:'جمع دو عدد هم‌علامت',ic:['🌡️','🏢','☀️'],g:['#ff9a5a','#ffd9a0','#7a3b2e'],
+ st:'طوفان صفر، کنترل گرمای شهر را خراب کرده. تو مهندس تازه‌ی شهر هستی و باید دمای برج‌ها را درست حساب کنی؛ اگر اشتباه کنی برج داغ می‌شود!',
+ key:'اگر دو تغییر هم‌جهت باشند (هر دو گرما یا هر دو سرما) روی هم جمع می‌شوند و جهت همان می‌ماند.',
+ ct:'دمای برج ۳− است و ۴ درجه‌ی دیگر سرد می‌شود. دما نسبت به صفر چه می‌شود؟',co:['از صفر دورتر و سردتر','به صفر نزدیک‌تر','صفر می‌شود'],
+ ce:'دو سرما روی هم، سرمای بیشتر می‌سازند: ۳− و ۴− می‌شود ۷−.',th:'برج‌ها خنک شدند! مردم محله از تو تشکر کردند.'},
+{t:'آتش‌نشانی',d:'جمع دو عدد ناهم‌علامت',ic:['🚒','🔥','🧊'],g:['#2b2d6e','#c4483d','#171a40'],
+ st:'آتش‌نشان‌ها گرما و سرما را با هم مخلوط می‌کنند تا آتش خاموش شود. باید بدانی گرما و سرما چطور همدیگر را خنثی می‌کنند.',
+ key:'هر ۱+ با یک ۱− صفر می‌شود (خنثی). بعد از خنثی شدن، فقط اضافه‌ی یک طرف می‌ماند و علامت جواب علامت همان طرف است.',
+ ct:'۵ واحد گرما با ۵ واحد سرما در یک اتاق مخلوط می‌شود. نتیجه چیست؟',co:['صفر؛ همدیگر را خنثی می‌کنند','۱۰','۱۰−'],
+ ce:'۵+ و ۵− جفت می‌شوند و صفر می‌دهند.',th:'آتش خاموش شد! آتش‌نشان‌ها تو را روی دوش بلند کردند.'},
+{t:'آسانسور بزرگ',d:'جمع ترکیبی (بالا و پایین)',ic:['🛗','🅿️','🏬'],g:['#4a90d9','#bfe4ff','#264a73'],
+ st:'آسانسورهای مرکز خرید به هم ریخته‌اند. طبقه‌ی منفی یعنی پارکینگ زیر زمین. آسانسورها را به طبقه‌ی درست برسان.',
+ key:'جمع روی محور: عدد مثبت یعنی حرکت به راست (بالا)، عدد منفی یعنی حرکت به چپ (پایین).',
+ ct:'آسانسور در طبقه‌ی ۲− است و ۵ طبقه بالا می‌رود. از همکف رد می‌شود؟',co:['بله، ۲ طبقه تا همکف و ۳ طبقه بالاتر','نه، زیر همکف می‌ماند','دقیقاً به همکف می‌رسد'],
+ ce:'۲ طبقه تا صفر، ۳ طبقه‌ی باقی‌مانده بالای صفر: جواب ۳+.',th:'مردم از پارکینگ سالم بالا آمدند!'},
+{t:'انبار یخ',d:'تفریق عدد مثبت',ic:['🧊','🏭','❄️'],g:['#9fd8ee','#eaf8ff','#3f7d99'],
+ st:'انبار یخ شهر باید با دقت خنک شود. دستگاه‌ها از دما کم می‌کنند و تو باید نتیجه را پیش‌بینی کنی.',
+ key:'تفریق یعنی جمع با قرینه: a − b = a + (−b).',
+ ct:'کم کردن ۳+ از ۵، با کدام جمع برابر است؟',co:['۵ + (−۳)','۵ + (+۳)','(−۵) + (+۳)'],
+ ce:'کم کردن گرما یعنی اضافه کردن سرما: ۵ − (+۳) = ۵ + (−۳) = ۲.',th:'غذاها سالم ماندند. بازار دوباره باز شد!'},
+{t:'یخ‌ساز مرموز',d:'تفریق عدد منفی',ic:['🧪','⚙️','🧊'],g:['#3d1f6d','#7a54b8','#1e0e3c'],
+ st:'یخ‌ساز مرموز سرمای اضافه جمع کرده. برداشتن سرما چه اثری دارد؟ جواب این سؤال شهر را نجات می‌دهد.',
+ key:'برداشتن (تفریق) یک عدد منفی مثل اضافه کردن مثبت است: a − (−b) = a + b.',
+ ct:'دمای انبار ۲− است و ۳ درجه سرمای اضافه برداشته می‌شود. دما چه می‌شود؟',co:['گرم‌تر (۱+)','سردتر (۵−)','تغییری نمی‌کند'],
+ ce:'برداشتن سرما یعنی گرم شدن: ۲− − (−۳) = ۱+.',th:'دمای انبار درست شد؛ دانشمندان دست تو را فشردند!'},
+{t:'کارخانه‌ی تکرار',d:'ضرب عدد مثبت در هر عدد',ic:['🏭','📦','⏱️'],g:['#2f8f6a','#c8f0b8','#1d5a42'],
+ st:'خط تولید هر ساعت یک تغییر ثابت در دما می‌سازد. باید تغییر کل چند ساعت را حساب کنی.',
+ key:'ضرب یعنی تکرار جمع: ۳ × (−۲) یعنی ۲− + ۲− + ۲−. مثبت × منفی = منفی.',
+ ct:'هر ساعت دما ۲ درجه پایین می‌آید. بعد از ۳ ساعت، تغییر کل چیست؟',co:['۶− (۳ بار کاهش)','۶+','۱−'],
+ ce:'سه بار کاهش ۲ درجه‌ای: ۲− + ۲− + ۲− = ۶−.',th:'خط تولید راه افتاد و کارگرها خندیدند!'},
+{t:'ماشین زمان',d:'ضرب عدد منفی',ic:['⏪','🕰️','✨'],g:['#1a1a40','#6a4fb3','#0d0d26'],
+ st:'ماشین زمان شهر خراب شده. زمان منفی یعنی گذشته. با این ماشین باید حساب کنی در گذشته دما چه بود.',
+ key:'الگو را دنبال کن: هر بار یک واحد از عدد اول کم شود، جواب به اندازه‌ی b تغییر می‌کند. پس منفی × منفی = مثبت.',
+ ct:'دما ساعتی ۲ درجه پایین می‌آید. ۳ ساعت قبل دما نسبت به الان چطور بود؟',co:['۶ درجه گرم‌تر (۳−) × (−۲) = ۶+','۶ درجه سردتر','همان‌قدر'],
+ ce:'وقتی دما داشت کم می‌شد، در گذشته بیشتر بود: ۶+.',th:'ماشین زمان درست شد و ساعت شهر دوباره راه افتاد!'},
+{t:'مرکز توزیع',d:'تقسیم اعداد صحیح',ic:['🚚','📦','⚖️'],g:['#e6a23c','#fff0c2','#8a5a14'],
+ st:'مرکز توزیع، بسته‌ها را مساوی بین محله‌ها پخش می‌کند. تقسیم عکس ضرب است و تو باید با آن جواب را بسنجی.',
+ key:'اگر a ÷ b = c باشد، c × b = a. قانون علامت‌ها مثل ضرب است: هم‌علامت مثبت، ناهم‌علامت منفی.',
+ ct:'می‌دانیم ۶− × ۴ = ۲۴−. پس ۲۴− ÷ ۴ برابر است با؟',co:['۶−','۶+','۴−'],
+ ce:'تقسیم، عمل برعکس ضرب است: چون ۶− × ۴ = ۲۴−، پس ۲۴− ÷ ۴ = ۶−.',th:'همه‌ی محله‌ها سهم خودشان را گرفتند!'},
+{t:'نیروگاه نهایی',d:'همه‌ی عمل‌ها با هم',ic:['⚡','🏭','🔥'],g:['#0b1f3a','#e04545','#050f1c'],
+ st:'آخرین نبرد! نیروگاه شهر در خطر انفجار است و هر چهار عمل را از تو می‌خواهد. هر چه یاد گرفتی را به کار ببر.',
+ key:'جمع: حرکت روی محور. تفریق: جمع با قرینه. ضرب و تقسیم: هم‌علامت مثبت، ناهم‌علامت منفی.',
+ ct:'کدام جمله درست است؟',co:['(−۳) × (−۴) مثبت می‌شود','(−۳) × (−۴) منفی می‌شود','(−۱۲) ÷ (−۴) منفی می‌شود'],
+ ce:'هم‌علامت‌ها در ضرب و تقسیم، جواب مثبت می‌دهند.',th:'نیروگاه آرام شد. شهر ترمو نجات پیدا کرد و تو قهرمان شهر شدی!'}];
+let P={n:0},S={};try{P=JSON.parse(localStorage.getItem('zk7c'))||P}catch(e){}
+const sv=()=>{try{localStorage.setItem('zk7c',JSON.stringify(P))}catch(e){}};
+
+function scene(i,h){const L=LV[i],c=L.g;let b='',s=i*13+5;
+ for(let k=0;k<9;k++){s=(s*37+11)%97;const w=28+s%20,t=34+s%40,x=k*45+2;
+  b+=`<rect x="${x}" y="${110-t}" width="${w}" height="${t}" fill="${c[2]}"/>`;
+  for(let y=110-t+7;y<104;y+=12)b+=`<rect x="${x+6}" y="${y}" width="5" height="6" fill="${(k+y)%3<h?'#ff4d2e':'#ffe27a'}"/>`}
+ return`<svg class="sc" viewBox="0 0 400 130" role="img" aria-label="${L.t}"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs><rect width="400" height="130" fill="url(#g)"/>${b}<rect y="110" width="400" height="20" fill="${c[2]}"/><text x="200" y="64" font-size="46" text-anchor="middle">${L.ic[0]}</text><text x="50" y="40" font-size="24">${L.ic[1]}</text><text x="330" y="40" font-size="24">${L.ic[2]}</text><text x="200" y="104" font-size="22" text-anchor="middle">${'🔥'.repeat(h)}</text></svg>`}
+function line(a){const X=n=>200+n*15;let t='';
+ for(let n=-12;n<=12;n++){const g=n%5===0;t+=`<line x1="${X(n)}" x2="${X(n)}" y1="${g?44:47}" y2="${g?66:60}" stroke="var(--mut)" stroke-width="${g?1.6:1}"/>`;if(g)t+=`<text x="${X(n)}" y="80" font-size="11" text-anchor="middle" fill="var(--ink)">${rs(n)}</text>`}
+ return`<svg viewBox="0 0 400 90" role="img" aria-label="محور اعداد"><line x1="8" x2="392" y1="53" y2="53" stroke="var(--acc)" stroke-width="3" stroke-linecap="round"/>${t}<line id="seg" x1="0" x2="0" y1="53" y2="53" stroke="var(--acc2)" stroke-width="5" stroke-linecap="round" opacity="0"/><circle cx="${X(a)}" cy="53" r="4.5" fill="var(--acc2)"/><text id="pet" x="0" y="0" font-size="24" text-anchor="middle" style="transform:translate(${X(a)}px,40px)">🏃</text></svg>`}
+function G(i){if(i===9)i=R(1,8);const m=x=>R(0,1)?x:-x;let a,b,o='+';
+ if(i===1){const s=m(1);a=s*R(1,6);b=s*R(1,6)}
+ else if(i===2){const s=m(1);a=s*R(1,9);b=R(0,3)?-s*R(1,9):-a}
+ else if(i===3){do{a=m(R(1,9));b=m(R(1,9))}while(A(a+b)>12)}
+ else if(i===4){o='\u2212';do{a=m(R(1,9));b=R(1,9)}while(A(a-b)>12)}
+ else if(i===5){o='\u2212';do{a=m(R(1,9));b=-R(1,9)}while(A(a-b)>12)}
+ else if(i===6){o='\u00d7';a=R(2,6);b=m(R(1,9))}
+ else if(i===7){o='\u00d7';a=-R(2,6);b=m(R(1,9))}
+ else{o='\u00f7';b=m(R(2,9));a=m(R(1,9))*b}
+ return{i,a,b,o,r:o==='+'?a+b:o==='\u2212'?a-b:o==='\u00d7'?a*b:a/b}}
+function story(q){const{a,b,i}=q;
+ if(i===1)return`دمای برج ${rs(a)}° است و ${b>0?'گرمای':'سرمای'} ${fa(A(b))} درجه‌ای می‌رسد.`;
+ if(i===2)return`در اتاق ${fa(A(a))} واحد ${a>0?'گرما':'سرما'} هست و ${fa(A(b))} واحد ${b>0?'گرما':'سرما'} هم وارد می‌شود. تعادل نهایی؟`;
+ if(i===3)return`آسانسور در طبقه‌ی ${rs(a)} است و ${fa(A(b))} طبقه ${b>0?'بالا':'پایین'} می‌رود. به کدام طبقه می‌رسد؟`;
+ if(i===4)return`دمای انبار ${rs(a)}° است. ${fa(b)} درجه گرما از آن کم می‌کنیم. دمای جدید؟`;
+ if(i===5)return`دمای انبار ${rs(a)}° است. ${fa(A(b))} درجه سرمای اضافی را برمی‌داریم. دمای جدید؟`;
+ if(i===6)return`${fa(a)} ساعت پشت‌سرهم، هر ساعت دما ${rs(b)} درجه تغییر می‌کند. تغییر کل؟`;
+ if(i===7)return`دما هر ساعت ${rs(b)} درجه تغییر می‌کند. در زمان ${rs(a)} (یعنی ${fa(A(a))} ساعت قبل) دما نسبت به الان چقدر فرق داشت؟`;
+ return`تغییر کل دما ${rs(a)}° شده و هر ساعت ${rs(b)}° تغییر می‌کند. چند ساعت گذشته است؟`}
+function why(q){const{a,b,r,o,i}=q;
+ if(o==='+')return i===2?`گرما و سرمای هم‌اندازه یکدیگر را خنثی می‌کنند و فقط اضافه‌ی یک طرف می‌ماند.`:`از ${rs(a)} شروع کن؛ ${b>0?'عدد مثبت یعنی به راست':'عدد منفی یعنی به چپ'} برو ${fa(A(b))} واحد.`;
+ if(o==='\u2212')return`تفریق یعنی جمع با قرینه: ${par(a)} \u2212 ${par(b)} = ${par(a)} + ${par(-b)}`;
+ if(o==='\u00d7'){if(a>0)return`یعنی ${fa(a)} بار جمع: ${Array(a).fill(par(b)).join(' + ')}`;
+  let t='';for(let k=1;k>=a;k--)t+=`<div>${par(k)} \u00d7 ${par(b)} = ${rs(k*b)}</div>`;
+  return`به الگو نگاه کن: هر بار یک واحد از عدد اول کم می‌شود، جواب به اندازه‌ی ${par(-b)} تغییر می‌کند.<div dir="ltr" class="pt">${t}</div>`}
+ return`چون ${par(r)} \u00d7 ${par(b)} = ${par(a)}، پس ${par(a)} \u00f7 ${par(b)} = ${rs(r)}. ${(a<0)===(b<0)?'هم‌علامت':'ناهم‌علامت'} ← جواب ${r>0?'مثبت':'منفی'}.`}
+function opts(q){const r=q.r;let s=[...new Set([-r,r+1,r-1,r+2,r-2,q.a+q.b,q.a-q.b])].filter(x=>x!==r);shuf(s);s=s.slice(0,3);
+ while(s.length<3){const x=r+R(-6,6);if(x!==r&&!s.includes(x))s.push(x)}return shuf([r,...s])}
+
+function map(){app.innerHTML=`<h1>ماموریت آن سوی صفر</h1><p class="sub">طوفان صفر کنترل دمای شهر را خراب کرده. تو مهندس شهر هستی و فقط با فهمیدن اعداد صحیح می‌توانی آن را نجات بدهی.</p>
+<div class="city">${LV.map((L,i)=>`<span style="opacity:${i<P.n?1:.25}">${L.ic[1]}</span>`).join('')}</div>
+${LV.map((L,i)=>`<button class="stage" ${i>P.n?'disabled':''} onclick="lesson(${i})"><span class="ic">${i<P.n?'✅':L.ic[0]}</span><span>${fa(i+1)}. ${L.t}<small>${L.d}</small></span></button>`).join('')}`}
+const hdr=()=>`<div class="top"><button class="ghost" onclick="map()">نقشه</button><b>${LV[S.i].t}</b></div>`;
+function lesson(i){S={i,ok:0,heat:0};const L=LV[i];
+ app.innerHTML=`${hdr()}${scene(i,0)}<div class="card"><p>${L.st}</p><p class="key">💡 ${L.key}</p></div>
+ <div class="card"><b>پیش از شروع، فکر کن:</b><p>${L.ct}</p>${shuf(L.co.map((t,k)=>[t,k])).map(([t,k])=>`<button class="opt2" onclick="cc(${k},this)">${t}</button>`).join('')}<div id="cx"></div></div>`}
+function cc(k,b){if(k===0){document.querySelectorAll('.opt2').forEach(x=>x.disabled=true);b.classList.add('ok');
+ document.getElementById('cx').innerHTML=`<p><b class="g">درسته!</b> ${LV[S.i].ce}</p><button class="go" onclick="play()">شروع مأموریت</button>`}
+ else{b.classList.add('no');b.disabled=true;document.getElementById('cx').innerHTML='<p>هنوز نه؛ دوباره فکر کن و گزینه‌ی دیگری را امتحان کن. 🤔</p>'}}
+function play(){S.ok=0;S.heat=0;nextQ()}
+function nextQ(){const q=G(S.i+1);S.q=q;S.lock=0;const lin=q.o==='+'||q.o==='\u2212';
+ app.innerHTML=`${hdr()}${scene(S.i,S.heat)}<div class="bar"><i style="width:${S.ok/6*100}%"></i></div>
+ <div class="card"><p>${story(q)}</p><div class="eq">${par(q.a)} ${q.o} ${par(q.b)} = ?</div>${lin?line(q.a):''}</div>
+ <div id="st"><p class="q">۱) پیش از حساب کردن: جواب چه علامتی دارد؟</p><div class="opts3">${['مثبت','منفی','صفر'].map((t,k)=>`<button class="opt2" onclick="sgn(${k},this)">${t}</button>`).join('')}</div></div><div id="vs"></div><div id="fb"></div>`}
+function sgn(k,b){if(S.lock)return;const q=S.q,c=q.r>0?0:q.r<0?1:2;
+ document.querySelectorAll('#st .opt2').forEach(x=>x.disabled=true);
+ if(k===c){b.classList.add('ok');document.getElementById('vs').innerHTML=`<p class="q">۲) حالا مقدار جواب را پیدا کن:</p><div class="opts">${opts(q).map(v=>`<button class="opt" data-v="${v}" onclick="val(${v})">${rs(v)}</button>`).join('')}</div>`}
+ else{b.classList.add('no');done(0,1)}}
+function val(v){if(S.lock)return;document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const x=+b.dataset.v;if(x===S.q.r)b.classList.add('ok');else if(x===v)b.classList.add('no')});done(v===S.q.r,0)}
+function done(ok,sw){const q=S.q;S.lock=1;ok?S.ok++:S.heat++;
+ const pet=document.getElementById('pet');if(pet){const X=n=>200+n*15,s=document.getElementById('seg');pet.style.transform=`translate(${X(q.r)}px,40px)`;s.setAttribute('x1',X(q.a));s.setAttribute('x2',X(q.r));s.setAttribute('opacity','.9')}
+ document.querySelector('.sc').outerHTML=scene(S.i,S.heat);
+ const fin=S.ok>=6,dead=S.heat>=3;
+ document.getElementById('fb').innerHTML=`<div class="fb"><b class="${ok?'g':'r'}">${ok?'درست! ✅':sw?'علامت جواب اشتباه بود؛ ساختمان داغ می‌شود 🔥':'اشتباه شد؛ ساختمان داغ می‌شود 🔥'}</b><div class="eqs">${par(q.a)} ${q.o} ${par(q.b)} = ${par(q.r)}</div><p>${why(q)}</p></div><button class="go" onclick="${dead?'fail()':fin?'endL()':'nextQ()'}">${dead?'ادامه':fin?'نجات شهر!':'سؤال بعدی'}</button>`;
+ document.querySelector('.go').scrollIntoView({block:'nearest'})}
+function fail(){app.innerHTML=`${hdr()}${scene(S.i,3)}<div class="card res"><div class="big">🔥</div><h2>ساختمان بیش از حد داغ شد!</h2><p>اشکالی ندارد؛ مهندس‌ها از اشتباه یاد می‌گیرند. درس را یک بار دیگر ببین و دوباره تلاش کن.</p><button class="go" onclick="lesson(${S.i})">مرور درس و تلاش دوباره</button></div>`}
+function endL(){P.n=Math.max(P.n,S.i+1);sv();const L=LV[S.i],last=S.i===LV.length-1;
+ app.innerHTML=`${hdr()}${scene(S.i,0)}<div class="card res"><div class="big">${last?'🏆':'🎉'}</div><h2>${last?'شهر ترمو نجات پیدا کرد!':'مأموریت موفق!'}</h2><p>${L.th}</p>
+ ${last?'<p>تو حالا فقط جواب نمی‌دهی؛ می‌فهمی چرا جواب این است.</p>':''}
+ <button class="go" onclick="${last?'map()':`lesson(${S.i+1})`}">${last?'بازگشت به نقشه':'مرحله‌ی بعد'}</button></div>`}
+map();
+</script></body></html>
